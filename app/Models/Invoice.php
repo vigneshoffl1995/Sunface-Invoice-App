@@ -9,7 +9,7 @@ class Invoice extends Model
 {
     protected $fillable = [
         'invoice_number', 'customer_id', 'invoice_date', 'valid_until',
-        'sub_total', 'cgst', 'sgst', 'total', 'notes', 'status'
+        'sub_total', 'cgst', 'sgst', 'total','round_total','round_value', 'notes', 'status'
     ];
 
     protected $casts = [

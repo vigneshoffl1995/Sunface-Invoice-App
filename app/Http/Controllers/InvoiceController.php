@@ -54,6 +54,8 @@ class InvoiceController extends Controller
         $cgst = $subTotal * 0.09;
         $sgst = $subTotal * 0.09;
         $total = $subTotal + $cgst + $sgst;
+        $roundTotal = round($total); // ✅ Round-off calculation
+        $roundvalue = $roundTotal - $total;
 
 
 
@@ -63,14 +65,16 @@ class InvoiceController extends Controller
 
         $currentYear = date('Y');
 
-// find the last invoice for this year
+        // find the last invoice for this year
         $lastInvoice = Invoice::whereYear('invoice_date', $currentYear)->latest('id')->first();
 
-// determine the next sequence
+        // determine the next sequence
         $nextNumber = $lastInvoice ? intval(explode('/', $lastInvoice->invoice_number)[2]) + 1 : 1;
 
         //$invoiceNumber = 'ST/' . $currentYear . '/' . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
         $invoiceNumber = 'ST/25-26/'. str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+
+        
 
         $invoice = Invoice::create([
            // 'invoice_number' => 'ST/' . time(),
@@ -83,6 +87,8 @@ class InvoiceController extends Controller
             'cgst' => $cgst,
             'sgst' => $sgst,
             'total' => $total,
+            'round_total' => $roundTotal, // ✅ Save to DB
+            'round_value' => $roundvalue,
         ]);
 
         foreach ($validated['items'] as $item) {
@@ -100,7 +106,7 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $invoice->load(['customer', 'items']);
+        $invoice->load(['customer', 'items.hsn']);
         return view('invoices.show', compact('invoice'));
     }
 

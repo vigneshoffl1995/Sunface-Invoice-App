@@ -70,9 +70,9 @@
         @csrf
         @method('PATCH')
         <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-            <option value="pending" {{ $invoice->status == 'pending' ? 'selected' : '' }}>Pending</option>
-            <option value="paid" {{ $invoice->status == 'paid' ? 'selected' : '' }}>Paid</option>
-            <option value="cancelled" {{ $invoice->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+            <option value="pending" {{ $invoice->status == 'Pending' ? 'selected' : '' }}>Pending</option>
+            <option value="paid" {{ $invoice->status == 'Paid' ? 'selected' : '' }}>Paid</option>
+            <option value="cancelled" {{ $invoice->status == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
         </select>
     </form>
 </td>

@@ -1,8 +1,13 @@
+@php
+    preg_match('/(\d+)(?!.*\d)/', $proposal->proposal_number, $matches);
+    $lastNumber = $matches[1] ?? '';
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Proposal | Sunface Technologies</title>
+  <title>Sunface_Technologies_Proposal_{{ $lastNumber }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     html, body {
@@ -113,7 +118,7 @@
         <table>
           <tr>
             <td style="width:50%">
-              <strong>Proposal to</strong><br/>
+              <strong>Proposal to:</strong><br/>
               <span class="highlight">{{ $proposal->customer_name }}</span><br/>
               {{ $proposal->customer_address }}<br/>
               <span class="highlight">Phone: +91-{{ $proposal->customer_phone }}</span><br/>
@@ -126,11 +131,11 @@
                 </tr>
                 <tr>
                   <td>Proposal Date:</td>
-                  <td><span class="highlight">{{ $proposal->proposal_date->format('d-m-Y') }}</span></td>
+                  <td><span class="highlight">{{ $proposal->proposal_date->format('d-m-Y') }} / {{ $proposal->created_at->format('h:i A') }}</span></td>
                 </tr>
                 <tr>
                   <td>Total Amount:</td>
-                  <td><span class="highlight">₹{{ number_format($proposal->total, 2) }}</span></td>
+                  <td><span class="highlight">₹{{ number_format($proposal->round_total, 2) }}</span></td>
                 </tr>
                 <tr>
                   <td>Valid Until:</td>
@@ -176,11 +181,18 @@
               <td class="right">₹{{ number_format($proposal->sgst, 2) }}</td>
             </tr>
             <tr>
+              <td colspan="4" class="right">Round-off</td>
+              <td class="right">₹{{ number_format($proposal->round_value, 2) }}</td>
+            </tr>
+            <tr>
               <td colspan="4" class="right total">Total</td>
-              <td class="right total">₹{{ number_format($proposal->total, 2) }}</td>
+              <td class="right total">₹{{ number_format($proposal->round_total, 2) }}</td>
             </tr>
           </tbody>
         </table>
+        <div style="width: 100%;">
+    <p><span style="font-weight: bold;">Kind Note:</span> 50% Advance is mandatory to initiate the work.</p>
+  </div>
       </div>
 
       <div class="section" style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -215,6 +227,7 @@
       UPI: sunfacetechnologies@axisbank<br/>
     </td>
     <td style="width:33%; text-align:center;">
+      <strong>Scan QR to Pay</strong><br/>
       <img src="{{ asset('gpayqr.png') }}" alt="QR" style="height:100px;"><br/>
       <small>UPI: 9894037680@okbizaxis</small>
     </td>

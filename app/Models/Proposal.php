@@ -19,6 +19,8 @@ class Proposal extends Model
         'sgst',
         'total',
         'status',
+        'round_total',
+        'round_value'
     ];
 
     protected $casts = [

@@ -1,12 +1,18 @@
 @php
     $copies = ['Original for Client', 'Duplicate for Supplier'];
 @endphp
+
+@php
+    preg_match('/(\d+)(?!.*\d)/', $invoice->invoice_number, $matches);
+    $lastNumber = $matches[1] ?? '';
+@endphp
+
 @foreach ($copies as $copy)
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Invoice | Sunface Technologies</title>
+  <title>Sunface_Technologies_Invoice(ST_25-26_{{ $lastNumber }})</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     html, body {
@@ -34,7 +40,7 @@
     .section {
       border-bottom: 1px solid #ddd;
       padding-bottom: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     .highlight {
       background-color: #f8f9fa;
@@ -117,7 +123,7 @@
         <table>
           <tr>
             <td style="width:50%">
-              <strong>Billed To</strong><br/>
+              <strong>Billed To:</strong><br/>
               <span class="highlight">{{ $invoice->customer->company_name }}</span><br/>
               {{ $invoice->customer->address }}<br/>
               <!-- Client City, TN - 600002<br/> -->
@@ -133,14 +139,14 @@
                 </tr>
                 <tr>
                   <td>Invoice Date:</td>
-                  <td><span class="highlight">{{ $invoice->invoice_date->format('d-m-Y') }}</span></td>
+                  <td><span class="highlight">{{ $invoice->invoice_date->format('d-m-Y') }} / {{ $invoice->created_at->format('h:i A') }}</span></td>
                 </tr>
                 <tr>
                   <td>Total Amount:</td>
-                  <td><span class="highlight">₹{{ number_format($invoice->total, 2) }}</span></td>
+                  <td><span class="highlight">₹{{ number_format($invoice->round_total, 2) }}</span></td>
                 </tr>
                 <tr>
-                  <td>Valid Until:</td>
+                  <td>Due Date:</td>
                   <td><span class="highlight">{{ optional($invoice->valid_until)->format('d-m-Y') ?? 'N/A' }}</span></td>
                 </tr>
                 <tr>
@@ -170,7 +176,7 @@
                 <tr class="item">
                     <td class="center">{{ $key+1 }}</td>
                     <td>{{ $item->activity }}</td>
-                    <td class="center">{{ $item->hsn_code }}</td>
+                    <td class="center">{{ $item->hsn->hsn_code }}</td>
                     <td class="center">{{ $item->quantity }}</td>
                     <td class="right">{{ number_format($item->rate, 2) }}</td>
                     <td class="right">{{ number_format($item->amount, 2) }}</td>
@@ -206,9 +212,16 @@
               <td colspan="5" class="right">SGST @ 9%</td>
               <td class="right">₹{{ number_format($invoice->sgst, 2) }}</td>
             </tr>
+             <tr>
+              <td colspan="5" class="right">Round Off</td>
+              <td class="right">
+                ₹{{ number_format($invoice->round_value, 2) }}
+              </td>
+            </tr>
+
             <tr>
               <td colspan="5" class="right total">Total</td>
-              <td class="right total">₹{{ number_format($invoice->total, 2) }}</td>
+              <td class="right total">₹{{ number_format($invoice->round_total, 2) }}</td>
             </tr>
           </tbody>
         </table>
@@ -301,4 +314,8 @@
   </div>
 </body>
 </html>
+{{-- Add page break after first copy only --}}
+    @if (!$loop->last)
+        <div style="page-break-after: always;"></div>
+    @endif
 @endforeach

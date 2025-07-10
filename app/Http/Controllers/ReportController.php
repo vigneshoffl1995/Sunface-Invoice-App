@@ -42,13 +42,13 @@ class ReportController extends Controller
         $totalInvoices = $invoices->count();
 
         // Only Paid invoices for GST-included calculations
-        $paidInvoices = $invoices->where('status', 'paid');
+        $paidInvoices = $invoices->where('status', 'Paid');
 
         $totalB2BSales = $paidInvoices->filter(fn($inv) => optional($inv->customer)->customer_type === 'b2b')
-                                      ->sum('total');
+                                      ->sum('round_total');
 
         $totalB2CSales = $paidInvoices->filter(fn($inv) => optional($inv->customer)->customer_type === 'b2c')
-                                      ->sum('total');
+                                      ->sum('round_total');
 
         $totalB2BCount = $paidInvoices->filter(fn($inv) => optional($inv->customer)->customer_type === 'b2b')->count();
         $totalB2CCount = $paidInvoices->filter(fn($inv) => optional($inv->customer)->customer_type === 'b2c')->count();
@@ -58,7 +58,7 @@ class ReportController extends Controller
             return (object)[
                 'status' => $status,
                 'count'  => $group->count(),
-                'total'  => $group->sum('total'),
+                'total'  => $group->sum('round_total'),
             ];
         });
 

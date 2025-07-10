@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -41,16 +42,23 @@ class CustomerController extends Controller
     'company_name' => 'nullable|string|max:150',
     'customer_type' => 'required|in:b2b,b2c',
     'address' => 'required|string|max:255',
+    // 'gst_number' => [
+    //     'nullable',
+    //     'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/'
+    // ],
     'gst_number' => [
         'nullable',
-        'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/'
+        'regex:/^(NA|[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/',
+        Rule::unique('customers', 'gst_number')->ignore($request->id)->where(function ($query) {
+            return $query->where('gst_number', '!=', 'NA');
+        }),
     ],
     'phone' => [
         'required',
         'regex:/^[6-9]\d{9}$/',
-        'unique:customers,phone'
+        //'unique:customers,phone'
     ],
-    'email' => 'required|email|unique:customers,email',
+    'email' => 'required|email'
 ]);
         
 
@@ -92,16 +100,25 @@ class CustomerController extends Controller
     'company_name' => 'nullable|string|max:150',
     'customer_type' => 'required|in:b2b,b2c',
     'address' => 'required|string|max:255',
+    // 'gst_number' => [
+    //     'nullable',
+    //     'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/'
+    // ],
     'gst_number' => [
-        'nullable',
-        'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/'
-    ],
+            'nullable',
+            'regex:/^(NA|[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/',
+            Rule::unique('customers', 'gst_number')
+                ->ignore($customer->id)
+                ->where(function ($query) {
+                    return $query->where('gst_number', '!=', 'NA');
+                }),
+        ],
     'phone' => [
         'required',
-        'regex:/^[6-9]\d{9}$/',
-        'unique:customers,phone,'. $customer->id
+        'regex:/^[6-9]\d{9}$/'
+        // 'unique:customers,phone,'. $customer->id
     ],
-    'email' => 'required|email|unique:customers,email,' . $customer->id,
+    'email' => 'required|email'
 ]);
 
         $customer->update($request->all());

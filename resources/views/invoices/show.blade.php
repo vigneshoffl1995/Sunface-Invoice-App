@@ -48,7 +48,7 @@
                 <tr>
                     <td>{{ $key+1 }}</td>
                     <td>{{ $item->activity }}</td>
-                    <td>{{ $item->hsn_code }}</td>
+                    <td>{{ $item->hsn->hsn_code }}</td>
                     <td>{{ $item->quantity }}</td>
                     <td>{{ number_format($item->rate, 2) }}</td>
                     <td>{{ number_format($item->amount, 2) }}</td>
