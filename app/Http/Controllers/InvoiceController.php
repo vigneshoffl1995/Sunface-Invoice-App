@@ -113,13 +113,64 @@ class InvoiceController extends Controller
     public function edit(Invoice $invoice)
     {
         $customers = Customer::all();
+        $hsns = Hsn::all();
         $invoice->load('items');
-        return view('invoices.edit', compact('invoice', 'customers'));
+        return view('invoices.edit', compact('invoice', 'customers', 'hsns'));
     }
 
     public function update(Request $request, Invoice $invoice)
     {
-        return redirect()->back()->with('info', 'Invoice editing is under development.');
+        //return redirect()->back()->with('info', 'Invoice editing is under development.');
+        $validated = $request->validate([
+        'customer_id' => 'required|exists:customers,id',
+        'invoice_date' => 'required|date',
+        'valid_until' => 'nullable|date',
+        'notes' => 'nullable|string',
+        'items' => 'required|array|min:1',
+        'items.*.activity' => 'required|string|max:255',
+        'items.*.hsn_id' => 'required|exists:hsns,id',
+        'items.*.quantity' => 'required|integer|min:1',
+        'items.*.rate' => 'required|numeric|min:0',
+    ]);
+
+    $subTotal = 0;
+    foreach ($validated['items'] as $item) {
+        $subTotal += $item['quantity'] * $item['rate'];
+    }
+
+    $cgst = $subTotal * 0.09;
+    $sgst = $subTotal * 0.09;
+    $total = $subTotal + $cgst + $sgst;
+    $roundTotal = round($total);
+    $roundValue = $roundTotal - $total;
+
+    // Update invoice
+    $invoice->update([
+        'customer_id' => $validated['customer_id'],
+        'invoice_date' => $validated['invoice_date'],
+        'valid_until' => $validated['valid_until'],
+        'notes' => $validated['notes'],
+        'sub_total' => $subTotal,
+        'cgst' => $cgst,
+        'sgst' => $sgst,
+        'total' => $total,
+        'round_total' => $roundTotal,
+        'round_value' => $roundValue,
+    ]);
+
+    // Remove existing items and re-add
+    $invoice->items()->delete();
+    foreach ($validated['items'] as $item) {
+        $invoice->items()->create([
+            'activity' => $item['activity'],
+            'hsn_code' => $item['hsn_id'],
+            'quantity' => $item['quantity'],
+            'rate' => $item['rate'],
+            'amount' => $item['quantity'] * $item['rate'],
+        ]);
+    }
+
+    return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully.');
     }
 
     public function destroy(Invoice $invoice)

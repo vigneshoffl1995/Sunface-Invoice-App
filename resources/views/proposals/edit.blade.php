@@ -18,38 +18,39 @@
     </div>
 @endif
 
-<form action="{{ route('proposals.update', $proposal) }}" method="POST">
+<form action="{{ route('proposals.update', $proposal->id) }}" method="POST">
     @csrf
     @method('PUT')
 
     <div class="mb-3">
         <label>Customer Name *</label>
-        <input type="text" name="customer_name" class="form-control" required value="{{ $proposal->customer_name }}">
+        <input type="text" name="customer_name" class="form-control" required value="{{ old('customer_name', $proposal->customer_name) }}">
     </div>
 
     <div class="mb-3">
         <label>Customer Address</label>
-        <textarea name="customer_address" class="form-control">{{ $proposal->customer_address }}</textarea>
+        <textarea name="customer_address" class="form-control">{{ old('customer_address', $proposal->customer_address) }}</textarea>
     </div>
 
     <div class="mb-3">
         <label>Customer Phone *</label>
-        <input type="text" name="customer_phone" class="form-control" required value="{{ $proposal->customer_phone }}">
+        <input type="text" name="customer_phone" class="form-control" required value="{{ old('customer_phone', $proposal->customer_phone) }}">
     </div>
 
-    <div class="mb-3">
-        <label>Proposal Date *</label>
-        <input type="date" name="proposal_date" class="form-control" required value="{{ $proposal->proposal_date }}">
-    </div>
-
-    <div class="mb-3">
-        <label>Valid Until</label>
-        <input type="date" name="valid_until" class="form-control" value="{{ $proposal->valid_until }}">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Proposal Date *</label>
+            <input type="date" name="proposal_date" class="form-control" required value="{{ old('proposal_date', \Carbon\Carbon::parse($proposal->proposal_date)->format('Y-m-d')) }}">
+        </div>
+        <div class="col-md-6">
+            <label>Valid Until</label>
+            <input type="date" name="valid_until" class="form-control" value="{{ old('valid_until', optional($proposal->valid_until)->format('Y-m-d')) }}">
+        </div>
     </div>
 
     <div class="mb-3">
         <label>Notes</label>
-        <textarea name="notes" class="form-control">{{ $proposal->notes }}</textarea>
+        <textarea name="notes" class="form-control">{{ old('notes', $proposal->notes) }}</textarea>
     </div>
 
     <h5>Line Items</h5>
@@ -80,7 +81,7 @@
                     <input type="number" name="items[{{ $index }}][rate]" class="form-control rate" step="0.01" value="{{ $item->rate }}">
                 </td>
                 <td>
-                    <input type="text" class="form-control amount" readonly value="{{ $item->amount }}">
+                    <input type="text" class="form-control amount" readonly value="{{ number_format($item->amount, 2) }}">
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm removeItem">
@@ -95,19 +96,19 @@
     <div class="row mb-3">
         <div class="col-md-3">
             <label>Subtotal (₹)</label>
-            <input type="text" name="sub_total" class="form-control" id="sub_total" readonly value="{{ $proposal->sub_total }}">
+            <input type="text" name="sub_total" class="form-control" id="sub_total" readonly value="{{ number_format($proposal->sub_total, 2) }}">
         </div>
         <div class="col-md-3">
             <label>CGST 9% (₹)</label>
-            <input type="text" name="cgst" class="form-control" id="cgst" readonly value="{{ $proposal->cgst }}">
+            <input type="text" name="cgst" class="form-control" id="cgst" readonly value="{{ number_format($proposal->cgst, 2) }}">
         </div>
         <div class="col-md-3">
             <label>SGST 9% (₹)</label>
-            <input type="text" name="sgst" class="form-control" id="sgst" readonly value="{{ $proposal->sgst }}">
+            <input type="text" name="sgst" class="form-control" id="sgst" readonly value="{{ number_format($proposal->sgst, 2) }}">
         </div>
         <div class="col-md-3">
             <label>Total (₹)</label>
-            <input type="text" name="total" class="form-control" id="grand_total" readonly value="{{ $proposal->total }}">
+            <input type="text" name="total" class="form-control" id="grand_total" readonly value="{{ number_format($proposal->total, 2) }}">
         </div>
     </div>
 
@@ -137,6 +138,10 @@ function recalculateTotals() {
     $("#sgst").val(sgst.toFixed(2));
     $("#grand_total").val(grand_total.toFixed(2));
 }
+
+$(document).ready(function () {
+    recalculateTotals();
+});
 
 $("#addItem").click(function(){
     const row = `<tr>

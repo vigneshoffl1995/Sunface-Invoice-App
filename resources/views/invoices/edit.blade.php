@@ -1,10 +1,10 @@
 @extends('layouts.master')
 
-@section('title', 'Create Invoice')
+@section('title', 'Edit Invoice')
 
 @section('content')
 <div class="mb-3">
-    <h3>Create Invoice</h3>
+    <h3>Edit Invoice</h3>
 </div>
 
 @if ($errors->any())
@@ -18,14 +18,18 @@
 </div>
 @endif
 
-<form action="{{ route('invoices.store') }}" method="POST">
+<form action="{{ route('invoices.update', $invoice->id) }}" method="POST">
     @csrf
+    @method('PUT')
+
     <div class="mb-3">
         <label>Customer *</label>
         <select name="customer_id" class="form-select" required>
             <option value="">-- Select Customer --</option>
             @foreach($customers as $customer)
-                <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->company_name }}</option>
+                <option value="{{ $customer->id }}" {{ $customer->id == $invoice->customer_id ? 'selected' : '' }}>
+                    {{ $customer->name }} - {{ $customer->company_name }}
+                </option>
             @endforeach
         </select>
     </div>
@@ -33,15 +37,15 @@
     <div class="row mb-3">
         <div class="col-md-4">
             <label>Invoice Date *</label>
-            <input type="date" name="invoice_date" class="form-control" required>
+            <input type="date" name="invoice_date" class="form-control" required value="{{ $invoice->invoice_date->format('Y-m-d') }}">
         </div>
         <div class="col-md-4">
             <label>Validity Date</label>
-            <input type="date" name="valid_until" class="form-control">
+            <input type="date" name="valid_until" class="form-control" value="{{ optional($invoice->valid_until)->format('Y-m-d') }}">
         </div>
         <div class="col-md-4">
             <label>Notes</label>
-        <textarea name="notes" class="form-control"></textarea>
+        <textarea name="notes" class="form-control">{{ $invoice->notes }}</textarea>
         </div>
     </div>
 
@@ -64,30 +68,60 @@
             </tr>
         </thead>
         <tbody>
-            <!-- dynamic rows will be appended here -->
+            @foreach($invoice->items as $index => $item)
+            <tr>
+                <td>
+                    <input type="text" name="items[{{ $index }}][activity]" class="form-control" required style="width: 450px;" value="{{ $item->activity }}">
+                </td>
+                <td>
+                    <select name="items[{{ $index }}][hsn_id]" class="form-select" required>
+                        <option value="">Select HSN</option>
+                        @foreach($hsns as $hsn)
+                            <option value="{{ $hsn->id }}" {{ $hsn->id == $item->hsn_code ? 'selected' : '' }}>
+                                {{ $hsn->hsn_code }} - {{ $hsn->description }}
+                            </option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="items[{{ $index }}][quantity]" class="form-control qty" min="1" value="{{ $item->quantity }}">
+                </td>
+                <td>
+                    <input type="number" name="items[{{ $index }}][rate]" class="form-control rate" step="0.01" value="{{ $item->rate }}">
+                </td>
+                <td>
+                    <input type="text" class="form-control amount" value="{{ number_format($item->amount, 2) }}" readonly>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm removeItem">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            @endforeach
         </tbody>
     </table>
 
     <div class="row mb-3">
         <div class="col-md-3">
             <label>Subtotal (₹)</label>
-            <input type="text" name="sub_total" class="form-control" id="sub_total" readonly>
+            <input type="text" class="form-control" id="sub_total" readonly>
         </div>
         <div class="col-md-3">
             <label>CGST 9% (₹)</label>
-            <input type="text" name="cgst" class="form-control" id="cgst" readonly>
+            <input type="text" class="form-control" id="cgst" readonly>
         </div>
         <div class="col-md-3">
             <label>SGST 9% (₹)</label>
-            <input type="text" name="sgst" class="form-control" id="sgst" readonly>
+            <input type="text" class="form-control" id="sgst" readonly>
         </div>
         <div class="col-md-3">
             <label>Total (₹)</label>
-            <input type="text" name="total" class="form-control" id="grand_total" readonly>
+            <input type="text" class="form-control" id="grand_total" readonly>
         </div>
     </div>
 
-    <button class="btn btn-primary">Save Invoice</button>
+    <button class="btn btn-primary">Update Invoice</button>
     <a href="{{ route('invoices.index') }}" class="btn btn-secondary">Cancel</a>
 </form>
 @endsection
@@ -95,7 +129,7 @@
 @section('scripts')
 <script>
 let hsns = @json($hsns);
-let itemIndex = 0;
+let itemIndex = {{ $invoice->items->count() }};
 
 function recalculateTotals() {
     let subtotal = 0;
@@ -114,6 +148,8 @@ function recalculateTotals() {
     $("#sgst").val(sgst.toFixed(2));
     $("#grand_total").val(grand_total.toFixed(2));
 }
+
+recalculateTotals();
 
 $("#addItem").click(function(){
     const row = `<tr>

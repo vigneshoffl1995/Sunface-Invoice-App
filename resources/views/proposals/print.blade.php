@@ -27,7 +27,7 @@
       margin: auto;
       border: 1px solid #eee;
       box-sizing: border-box;
-      padding: 15px; /* reduced margin */
+      padding: 10px; /* reduced margin */
     }
     .content {
       flex: 1;
@@ -35,7 +35,7 @@
     .section {
       border-bottom: 1px solid #ddd;
       padding-bottom: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     .highlight {
       background-color: #f8f9fa;
@@ -71,7 +71,7 @@
     }
     .footer-table {
       border-top: 1px solid #ddd;
-      margin-top: 15px;
+      margin-top: 10px;
       padding-top: 10px;
     }
     .signature {
@@ -191,7 +191,7 @@
           </tbody>
         </table>
         <div style="width: 100%;">
-    <p><span style="font-weight: bold;">Kind Note:</span> 50% Advance is mandatory to initiate the work.</p>
+    <p><span style="font-weight: bold;">Note:</span> {{ $proposal->notes }} <span style="font-weight: bold;">50% Advance mandatory to initiate the work.</span></p>
   </div>
       </div>
 
@@ -215,7 +215,7 @@
 </div>
 
 <div>
-      <table style="width:100%; margin-top: 20px;">
+      <table style="width:100%; margin-top: 10px;">
   <tr>
     <td style="width:33%; text-align:left;">
       <strong>Bank Details:</strong><br/>

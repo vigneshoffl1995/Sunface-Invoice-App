@@ -65,6 +65,7 @@
                 </form>
             </td>
             <td>
+                <a href="{{ route('proposals.edit', $proposal->id) }}" class="btn btn-sm btn-warning">Edit</a>
                 <a href="{{ route('proposals.show', $proposal->id) }}" class="btn btn-sm btn-info">
                     <i class="bi bi-eye"></i> View
                 </a>
