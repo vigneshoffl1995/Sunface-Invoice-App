@@ -104,8 +104,9 @@
             </td>
             <td style="width:50%" class="right">
               <strong>Sunface Technologies</strong><br/>
+              
               16/31, S and S Enclave, Kannapiran Colony<br/>
-              Valipalayam Main Road, Tiruppur -<br/>
+              Valipalayam Main Road, Tiruppur - 1<br/>
               <span class="highlight">Phone: +91-98940 37680</span><br/>
               <span class="highlight">GSTIN: 33BQHPM5372D1ZY</span><br/>
              info@sunface.in

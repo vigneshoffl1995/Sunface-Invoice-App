@@ -189,7 +189,7 @@
     @yield('content')
 
     <footer>
-      &copy; {{ date('Y') }} Sunface Technologies. All rights reserved.
+      &copy; {{ date('Y') }} <a href="https://sunface.in/"; target="_blank;">Sunface Technologies.</a> All rights reserved.
     </footer>
   </main>
 

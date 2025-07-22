@@ -155,6 +155,9 @@ $proposalNumber = 'PSL/' . $currentYear . '/' . $formattedNumber;
     $sgst = $subTotal * 0.09;
     $total = $subTotal + $cgst + $sgst;
 
+    $roundTotal = round($total); // ✅ Round-off calculation
+    $roundvalue = $roundTotal - $total;
+
     $proposal->update([
         'customer_name' => $validated['customer_name'],
         'customer_phone' => $validated['customer_phone'],
@@ -166,6 +169,8 @@ $proposalNumber = 'PSL/' . $currentYear . '/' . $formattedNumber;
         'cgst' => $cgst,
         'sgst' => $sgst,
         'total' => $total,
+        'round_total' => $roundTotal, // ✅ Save to DB
+        'round_value' => $roundvalue,
     ]);
 
     // clear existing items
