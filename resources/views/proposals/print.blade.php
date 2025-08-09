@@ -192,7 +192,7 @@
           </tbody>
         </table>
         <div style="width: 100%;">
-    <p><span style="font-weight: bold;">Note:</span> {{ $proposal->notes }} <span style="font-weight: bold;">50% Advance mandatory to initiate the work.</span></p>
+    <p><span style="font-weight: bold;">Note:</span> {{ $proposal->notes }} <!--<span style="font-weight: bold;">50% Advance mandatory to initiate the work.</span>--></p>
   </div>
       </div>
 
@@ -207,6 +207,7 @@
   </div>
 
   <!-- Right: Authorized Signature -->
+   
   <div class="signature" style="width: 45%; text-align: right;">
     <!-- <p><strong>Authorized Signature</strong></p>
     <img src="{{ asset('Signature.png') }}" alt="Signature" style="height:40px;"/><br/> -->

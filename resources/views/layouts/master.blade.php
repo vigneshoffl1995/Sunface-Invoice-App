@@ -181,6 +181,11 @@
           </ul>
         </div>
       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->is('expenses*') ? 'active' : '' }}" href="{{ route('expenses.index') }}">
+          <i class="bi bi-wallet2 me-2"></i> Expenses
+        </a>
+      </li>
     </ul>
   </div>
 

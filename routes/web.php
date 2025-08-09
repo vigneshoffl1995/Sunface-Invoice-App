@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HsnController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\ExpenseController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -50,6 +51,8 @@ Route::middleware('auth')->group(function () {
     // Proposals Routes
     Route::get('/proposals/{proposal}/edit', [ProposalController::class, 'edit'])->name('proposals.edit');
     Route::put('/proposals/{proposal}', [ProposalController::class, 'update'])->name('proposals.update');
+
+    Route::resource('expenses', ExpenseController::class);
     
 });
 

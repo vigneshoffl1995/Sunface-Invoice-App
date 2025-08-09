@@ -60,7 +60,7 @@ class ProposalController extends Controller
         $cgst = $subTotal * 0.09;
         $sgst = $subTotal * 0.09;
         $total = $subTotal + $cgst + $sgst; 
-        $roundTotal = round($total); // ✅ Round-off calculation
+        $roundTotal = floor($total); // ✅ Round-off calculation
         $roundvalue = $roundTotal - $total;
 
         $currentYear = date('Y');
@@ -155,7 +155,7 @@ $proposalNumber = 'PSL/' . $currentYear . '/' . $formattedNumber;
     $sgst = $subTotal * 0.09;
     $total = $subTotal + $cgst + $sgst;
 
-    $roundTotal = round($total); // ✅ Round-off calculation
+    $roundTotal = floor($total); // ✅ Round-off calculation
     $roundvalue = $roundTotal - $total;
 
     $proposal->update([

@@ -54,7 +54,7 @@ class InvoiceController extends Controller
         $cgst = $subTotal * 0.09;
         $sgst = $subTotal * 0.09;
         $total = $subTotal + $cgst + $sgst;
-        $roundTotal = round($total); // ✅ Round-off calculation
+        $roundTotal = floor($total); // ✅ Round-off calculation
         $roundvalue = $roundTotal - $total;
 
 
@@ -141,7 +141,7 @@ class InvoiceController extends Controller
     $cgst = $subTotal * 0.09;
     $sgst = $subTotal * 0.09;
     $total = $subTotal + $cgst + $sgst;
-    $roundTotal = round($total);
+    $roundTotal = floor($total);
     $roundValue = $roundTotal - $total;
 
     // Update invoice
