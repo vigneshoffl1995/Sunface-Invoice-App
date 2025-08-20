@@ -37,7 +37,7 @@ class InvoiceController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
-            'valid_until' => 'nullable|date',
+            'valid_until' => 'nullable|date|after:invoice_date',
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.activity' => 'required|string|max:255',
@@ -124,7 +124,7 @@ class InvoiceController extends Controller
         $validated = $request->validate([
         'customer_id' => 'required|exists:customers,id',
         'invoice_date' => 'required|date',
-        'valid_until' => 'nullable|date',
+        'valid_until' => 'nullable|date|after:invoice_date',
         'notes' => 'nullable|string',
         'items' => 'required|array|min:1',
         'items.*.activity' => 'required|string|max:255',

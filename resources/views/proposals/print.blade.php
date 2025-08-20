@@ -211,7 +211,7 @@
   <div class="signature" style="width: 45%; text-align: right;">
     <!-- <p><strong>Authorized Signature</strong></p>
     <img src="{{ asset('Signature.png') }}" alt="Signature" style="height:40px;"/><br/> -->
-    <span class="highlight">Mr.Mohanraj Subramaniam</span>
+    <span class="highlight">Sunface Finance Team</span>
   </div>
 </div>
 </div>
@@ -250,9 +250,16 @@
      
       <div class="footer">
       <div class="greeting">
-        This is an E-Generated Quatation, valid only for 5 Days.
+        @if($proposal->valid_until && $proposal->proposal_date)
+    @php
+        $days = \Carbon\Carbon::parse($proposal->proposal_date)
+                    ->diffInDays(\Carbon\Carbon::parse($proposal->valid_until));
+    @endphp
+    <p>This is an E-Generated Quatation, valid only for <strong>{{ $days }} days</strong></p>
+@endif
       </div>
     </div>
+    
     </div>
 </body>
 </html>

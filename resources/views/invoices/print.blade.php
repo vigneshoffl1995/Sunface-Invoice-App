@@ -7,6 +7,22 @@
     $lastNumber = $matches[1] ?? '';
 @endphp
 
+@php
+    $phone = preg_replace('/\D/', '', $invoice->customer->phone); // remove non-digits
+
+    if (preg_match('/^[6-9]\d{9}$/', $phone)) {
+        // Mobile number
+        $formattedPhone = '+91-' . $phone;
+    } elseif (preg_match('/^0\d{10}$/', $phone)) {
+        // Landline with STD code (0 + 2-4 digit code + number)
+        // Example: 04423456789 → 044-23456789
+        $formattedPhone = preg_replace('/^(0\d{2,4})(\d+)$/', '$1-$2', $phone);
+    } else {
+        // Unknown format → show as stored
+        $formattedPhone = $invoice->customer->phone;
+    }
+@endphp
+
 @foreach ($copies as $copy)
 <!DOCTYPE html>
 <html lang="en">
@@ -128,7 +144,7 @@
               {{ $invoice->customer->address }}<br/>
               <!-- Client City, TN - 600002<br/> -->
               <span class="highlight">GSTIN: {{ $invoice->customer->gst_number }}</span><br/>
-              <span class="highlight">Phone: +91-{{ $invoice->customer->phone }}</span><br/>
+              <span class="highlight">Phone: {{ $formattedPhone }}</span><br/>
               {{ $invoice->customer->email }}
             </td>
             <td style="width:50%" class="right">
@@ -225,6 +241,9 @@
             </tr>
           </tbody>
         </table>
+        <div style="width: 100%;">
+    <p><span style="font-weight: bold;">Note:</span> {{ $invoice->notes }} <!--<span style="font-weight: bold;">50% Advance mandatory to initiate the work.</span>--></p>
+  </div>
       </div>
       <div class="section" style="display: flex; justify-content: space-between; align-items: flex-start;">
   <!-- Left: Other Services -->

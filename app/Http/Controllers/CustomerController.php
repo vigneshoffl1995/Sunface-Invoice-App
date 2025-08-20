@@ -48,14 +48,16 @@ class CustomerController extends Controller
     // ],
     'gst_number' => [
         'nullable',
-        'regex:/^(NA|[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/',
+        'regex:/^(-|NA|[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/',
         Rule::unique('customers', 'gst_number')->ignore($request->id)->where(function ($query) {
-            return $query->where('gst_number', '!=', 'NA');
+            return $query->where('gst_number', '!=', 'NA', '-');
         }),
     ],
     'phone' => [
         'required',
-        'regex:/^[6-9]\d{9}$/',
+        'regex:/^([6-9]\d{9}|0\d{10})$/'
+        //'regex:/^[6-9]\d{9}$/',
+
         //'unique:customers,phone'
     ],
     'email' => 'required|email'
@@ -106,16 +108,17 @@ class CustomerController extends Controller
     // ],
     'gst_number' => [
             'nullable',
-            'regex:/^(NA|[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/',
+            'regex:/^(-|NA|[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})$/',
             Rule::unique('customers', 'gst_number')
                 ->ignore($customer->id)
                 ->where(function ($query) {
-                    return $query->where('gst_number', '!=', 'NA');
+                    return $query->where('gst_number', '!=', 'NA', '-');
                 }),
         ],
     'phone' => [
         'required',
-        'regex:/^[6-9]\d{9}$/'
+        'regex:/^([6-9]\d{9}|0\d{10})$/'
+        //'regex:/^[6-9]\d{9}$/'
         // 'unique:customers,phone,'. $customer->id
     ],
     'email' => 'required|email'
