@@ -64,10 +64,10 @@ class ReportController extends Controller
 
         // Subtotals without GST (filtered only)
         $filteredB2BTotal = $invoices->filter(fn($inv) => optional($inv->customer)->customer_type === 'b2b')
-                                     ->sum(fn($inv) => $inv->items->sum(fn($item) => $item->quantity * $item->rate));
+                                     ->sum(fn($inv) => $inv->items->where('hsn_code', $hsnCode)->sum(fn($item) => $item->quantity * $item->rate));
 
         $filteredB2CTotal = $invoices->filter(fn($inv) => optional($inv->customer)->customer_type === 'b2c')
-                                     ->sum(fn($inv) => $inv->items->sum(fn($item) => $item->quantity * $item->rate));
+                                     ->sum(fn($inv) => $inv->items->where('hsn_code', $hsnCode)->sum(fn($item) => $item->quantity * $item->rate));
 
         $hsns = Hsn::all();
 

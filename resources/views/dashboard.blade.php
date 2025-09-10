@@ -34,7 +34,7 @@
     <div class="col-md-3">
         <div class="card text-bg-success mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Invoice Value (₹)</h5>
+                <h5 class="card-title">Total Turn-Over (₹)</h5>
                 <p class="fs-4">{{ number_format($monthlyInvoiceValue, 2) }}</p>
             </div>
         </div>
@@ -119,7 +119,7 @@
     <div class="col-md-4">
         <div class="card text-bg-secondary mb-3">
             <div class="card-body">
-                <h5 class="card-title">Unpaid Invoice Amount</h5>
+                <h5 class="card-title">Unpaid Invoice</h5>
                 <p class="fs-4">₹{{ number_format($unpaidSales, 2) }}</p>
             </div>
         </div>
