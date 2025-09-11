@@ -62,7 +62,7 @@
                 <p class="fs-4">{{ number_format($monthlyProfit, 2) }}</p>
             </div>
         </div>
-    </div>
+</div>
 </div>
 
 <hr>

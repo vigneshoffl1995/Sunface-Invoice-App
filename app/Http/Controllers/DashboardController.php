@@ -43,6 +43,10 @@ class DashboardController extends Controller
             ->whereMonth('invoice_date', $month)
             ->get();
 
+        $MonthTotalInvoice = Invoice::whereYear('invoice_date', $year)
+            ->whereMonth('invoice_date', $month)
+            ->count();
+
         $monthlyInvoiceValue = $invoices->sum('round_total'); // with GST
         $monthlyGST = $invoices->sum(fn($inv) => $inv->cgst + $inv->sgst);
 
@@ -123,6 +127,8 @@ class DashboardController extends Controller
             'monthlyGST',
             'monthlyExpenses',
             'monthlyProfit',
+            'MonthTotalInvoice',
+            
             
              // Notifications
             'notifications'
